@@ -572,6 +572,8 @@ class Message
         while ($key = array_search($attachment, $this->getImages() ?? [], true)) {
             unset($this->images[$key]);
         }
+
+        return $this;
     }
 
     /**

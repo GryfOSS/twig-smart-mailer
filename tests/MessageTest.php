@@ -251,18 +251,47 @@ class MessageTest extends TestCase
 
     public function testAddImageWithValidImage(): void
     {
-        // Skip image testing since we can't easily mock MimeTypes::guessMimeType
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $imagePath = __DIR__ . '/Assets/icon.png';
+        $this->assertFileExists($imagePath);
+        
+        $attachment = new Attachment($imagePath, 'test-image.png');
+        
+        $result = $this->message->addImage($attachment);
+        
+        $this->assertSame($this->message, $result);
+        $this->assertTrue($this->message->hasImageKey('test-image.png'));
+        $images = $this->message->getImages();
+        $this->assertArrayHasKey('test-image.png', $images);
+        $this->assertSame($attachment, $images['test-image.png']);
     }
 
     public function testAddImageThrowsExceptionForNonImage(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_non_image_');
+        file_put_contents($tempFile, 'This is not an image file content');
+        
+        $attachment = new Attachment($tempFile, 'document.txt');
+        
+        $this->expectException(InvalidImageException::class);
+        $this->expectExceptionMessage($tempFile);
+        
+        $this->message->addImage($attachment);
+        
+        unlink($tempFile);
     }
 
     public function testAddImageThrowsExceptionForDuplicateName(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $imagePath = __DIR__ . '/Assets/icon.png';
+        $attachment1 = new Attachment($imagePath, 'same-name.png');
+        $attachment2 = new Attachment($imagePath, 'same-name.png');
+        
+        $this->message->addImage($attachment1);
+        
+        $this->expectException(NotUniqueEmbedNameException::class);
+        $this->expectExceptionMessage('same-name.png');
+        
+        $this->message->addImage($attachment2);
     }
 
     public function testHasImageKey(): void
@@ -275,7 +304,18 @@ class MessageTest extends TestCase
 
     public function testHasImage(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $imagePath = __DIR__ . '/Assets/icon.png';
+        $attachment = new Attachment($imagePath, 'test-image.png');
+        
+        $this->assertFalse($this->message->hasImage($attachment));
+        
+        $this->message->addImage($attachment);
+        
+        $this->assertTrue($this->message->hasImage($attachment));
+        
+        // Test with different attachment object but same path/name
+        $differentAttachment = new Attachment($imagePath, 'test-image.png');
+        $this->assertFalse($this->message->hasImage($differentAttachment));
     }
 
     public function testHasImageWithEmptyImages(): void
@@ -292,7 +332,18 @@ class MessageTest extends TestCase
 
     public function testRemoveImageByKey(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $imagePath = __DIR__ . '/Assets/icon.png';
+        $attachment = new Attachment($imagePath, 'test-image.png');
+        
+        // First add an image
+        $this->message->addImage($attachment);
+        $this->assertTrue($this->message->hasImageKey('test-image.png'));
+        
+        // Then remove it
+        $result = $this->message->removeImageByKey('test-image.png');
+        
+        $this->assertSame($this->message, $result);
+        $this->assertFalse($this->message->hasImageKey('test-image.png'));
     }
 
     public function testRemoveImageByKeyWithEmptyImages(): void
@@ -304,12 +355,28 @@ class MessageTest extends TestCase
 
     public function testRemoveImageByKeyWithNonexistentKey(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $this->assertFalse($this->message->hasImageKey('nonexistent'));
+        
+        $result = $this->message->removeImageByKey('nonexistent');
+        
+        $this->assertSame($this->message, $result);
     }
 
     public function testRemoveImage(): void
     {
-        $this->markTestSkipped('Image testing requires complex MimeTypes mocking');
+        $imagePath = __DIR__ . '/Assets/icon.png';
+        $attachment = new Attachment($imagePath, 'test-image.png');
+        
+        // First add an image
+        $this->message->addImage($attachment);
+        $this->assertTrue($this->message->hasImage($attachment));
+        
+        // Then remove it
+        $result = $this->message->removeImage($attachment);
+        
+        $this->assertSame($this->message, $result);
+        $this->assertFalse($this->message->hasImage($attachment));
+        $this->assertFalse($this->message->hasImageKey('test-image.png'));
     }
 
     public function testSetNullValues(): void
