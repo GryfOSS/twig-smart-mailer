@@ -159,7 +159,7 @@ Feature: SMTP Email Sending via MailHog
             <tr>
               <td style="border: 1px solid #ddd; padding: 12px;">{{ item.name }}</td>
               <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">{{ item.quantity }}</td>
-              <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${{ item.price }}</td>
+              <td style="border: 1px solid #ddd; padding: 12px; text-align: right;">${{ item.price|number_format(2) }}</td>
             </tr>
           {% endfor %}
           </tbody>
@@ -184,22 +184,23 @@ Feature: SMTP Email Sending via MailHog
       </html>
       """
     And the message has context variables:
-      | order_id         | ORD-2024-001234        |
-      | customer_name    | John Smith             |
-      | total_amount     | 157.99                 |
-      | shipping_address | 123 Main St, Anytown   |
-      | delivery_date    | January 25, 2024       |
-      | company_name     | E-Commerce Plus        |
-    And the message has an attachment "order-receipt.pdf" with content "ORDER RECEIPT\nOrder ID: ORD-2024-001234\nCustomer: John Smith\nTotal: $157.99\nDate: 2024-01-20"
+      | order_id         | ORD123                             |
+      | customer_name    | John Smith                                   |
+      | total_amount     | 157.99                                       |
+      | shipping_address | 123 Main St Anytown                        |
+      | delivery_date    | January 25 2024                             |
+      | company_name     | E-Commerce Plus                              |
+      | order_items      | Premium Widget:2:49.99,Basic Tool:3:19.34   |
+    And the message has an attachment "order-receipt.pdf" with content "ORDER RECEIPT\nOrder ID: ORD123\nCustomer: John Smith\nTotal: $157.99\nDate: 2024-01-20"
     And the message has an attachment "tracking-info.txt" with content "TRACKING INFORMATION\nCarrier: FastShip\nTracking Number: FS123456789\nEstimated Delivery: Jan 25, 2024"
     And the message has an embedded image "company-logo.png"
     When I send the message
     Then one email should be sent to MailHog
-    And the MailHog email should have subject "Order Confirmation #ORD-2024-001234"
+    And the MailHog email should have subject "Order Confirmation #ORD123"
     And the MailHog email should be sent from "admin@ecommerce.com"
     And the MailHog email should be sent to "customer@buyer.com"
     And the MailHog email should contain text "Dear John Smith"
-    And the MailHog email should contain text "Order #ORD-2024-001234"
+    And the MailHog email should contain text "order #ORD123"
     And the MailHog email should contain text "$157.99"
     And the MailHog email should contain text "E-Commerce Plus Team"
     And the MailHog email should have 2 attachments

@@ -138,7 +138,13 @@ class SmartMailer implements SmartMailerInterface
             new Address($from->getAddress(), $from->getName() ?? '')
         );
 
-        $email->subject($message->getSubject() ?? '');
+        // Process subject through Twig if it contains template syntax
+        $subject = $message->getSubject() ?? '';
+        if (strpos($subject, '{{') !== false || strpos($subject, '{%') !== false) {
+            $template = $this->twig->createTemplate($subject, 'email_subject');
+            $subject = $template->render($message->getContext() ?? []);
+        }
+        $email->subject($subject);
 
         /* @var EmailAddress */
         foreach ($message->getTo() ?? [] as $to) {

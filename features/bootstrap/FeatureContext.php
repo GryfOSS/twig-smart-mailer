@@ -144,8 +144,25 @@ class FeatureContext implements Context
     {
         $context = [];
         foreach ($table->getRowsHash() as $key => $value) {
+            // Handle JSON-like object definitions for complex data
+            if ($key === 'order_items' && strpos($value, ':') !== false) {
+                // Parse simple object format like "Item A:2:29.99,Item B:1:45.00"
+                $items = [];
+                $itemStrings = explode(',', $value);
+                foreach ($itemStrings as $itemString) {
+                    $parts = explode(':', trim($itemString));
+                    if (count($parts) === 3) {
+                        $items[] = [
+                            'name' => $parts[0],
+                            'quantity' => (int)$parts[1],
+                            'price' => (float)$parts[2]
+                        ];
+                    }
+                }
+                $context[$key] = $items;
+            }
             // Handle comma-separated lists for arrays
-            if (strpos($value, ',') !== false) {
+            elseif (strpos($value, ',') !== false) {
                 $context[$key] = explode(',', $value);
             } else {
                 $context[$key] = $value;
@@ -366,6 +383,8 @@ class FeatureContext implements Context
         $email = $emails[0];
 
         $body = $email['Content']['Body'];
+        $body = str_replace("\r\n", "\n", $body);
+        $body = str_replace("=\n", "", $body);
         if (strpos($body, $text) === false) {
             throw new Exception("Email body does not contain expected text: $text\nActual body:\n$body");
         }
@@ -407,13 +426,28 @@ class FeatureContext implements Context
         $embeddedCount = 0;
         if (isset($email['MIME']['Parts'])) {
             foreach ($email['MIME']['Parts'] as $part) {
-                if (isset($part['Headers']['Content-Disposition']) &&
-                    strpos($part['Headers']['Content-Disposition'][0], 'inline') !== false &&
-                    isset($part['Headers']['Content-Type']) &&
-                    strpos($part['Headers']['Content-Type'][0], 'image/') !== false) {
-                    $embeddedCount++;
+
+                if (isset($part['MIME']) && is_array($part['MIME']) && isset($part['MIME']['Parts']) && is_array($email['MIME']['Parts'])) {
+                    // Check for embedded images in the MIME part
+                    foreach ($part['MIME']['Parts'] as $mimePart) {
+                        if (isset($mimePart['Headers']['Content-Disposition']) &&
+                            strpos($mimePart['Headers']['Content-Disposition'][0], 'inline') !== false &&
+                            isset($mimePart['Headers']['Content-Type']) &&
+                            strpos($mimePart['Headers']['Content-Type'][0], 'image/') !== false) {
+                            $embeddedCount++;
+                        }
+                    }
+                } else {
+                    if (isset($part['Headers']['Content-Disposition']) &&
+                        strpos($part['Headers']['Content-Disposition'][0], 'inline') !== false &&
+                        isset($part['Headers']['Content-Type']) &&
+                        strpos($part['Headers']['Content-Type'][0], 'image/') !== false) {
+                        $embeddedCount++;
+                    }
                 }
             }
+
+
         }
 
         if ($embeddedCount === 0) {
