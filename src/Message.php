@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
-use Praetorian\SmartMailer\Exception\InvalidImageException;
-use Praetorian\SmartMailer\Exception\NotUniqueEmbedNameException;
+use GryfOSS\Mailer\Exception\InvalidImageException;
+use GryfOSS\Mailer\Exception\NotUniqueEmbedNameException;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -22,8 +22,8 @@ use Symfony\Component\Mime\MimeTypes;
  * - Embedded images for HTML content
  * - Context variables for template rendering
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class Message
 {

@@ -1,8 +1,8 @@
-Praetorian Technology: Smart Mailer
-===================================
+GryfOSS: Twig Easy Mailer
+==========================
 
-![Tests status](https://github.com/praetoriantechnology/smart-mailer/workflows/tests/badge.svg)
-![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/praetoriantechnology/smart-mailer?label=latest%20version&sort=semver)
+![Tests status](https://github.com/gryfoss/twig-easy-mailer/workflows/tests/badge.svg)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/gryfoss/twig-easy-mailer?label=latest%20version&sort=semver)
 
 Smart mailer is a simple library which assists sending of emails with use of
 symfony/mailer component. At the moment it requires SMTP connection, but grants
@@ -27,11 +27,11 @@ tracking and use of string templates instead of files.
 
 declare(strict_types=1);
 
-use Praetorian\SmartMailer\Attachment;
-use Praetorian\SmartMailer\EmailAddress;
-use Praetorian\SmartMailer\Message;
-use Praetorian\SmartMailer\SmartMailer;
-use Praetorian\SmartMailer\Dsn\Smtp;
+use GryfOSS\Mailer\Attachment;
+use GryfOSS\Mailer\EmailAddress;
+use GryfOSS\Mailer\Message;
+use GryfOSS\Mailer\SmartMailer;
+use GryfOSS\Mailer\Dsn\Smtp;
 
 include 'vendor/autoload.php';
 
@@ -129,7 +129,7 @@ Thrown when email sending fails.
 ### Using Gmail Transport
 
 ```php
-use Praetorian\SmartMailer\Dsn\Gmail;
+use GryfOSS\Mailer\Dsn\Gmail;
 
 $gmail = new Gmail();
 $gmail->setUsername('your-email@gmail.com')
@@ -178,7 +178,7 @@ $message->setHtml('
 ### Testing with FakeFileSmartMailer
 
 ```php
-use Praetorian\SmartMailer\FakeFileSmartMailer;
+use GryfOSS\Mailer\FakeFileSmartMailer;
 
 $mailer = new FakeFileSmartMailer('/tmp/test-email.json');
 $mailer->send($message);
@@ -189,7 +189,7 @@ $mailer->send($message);
 ### Error Handling
 
 ```php
-use Praetorian\SmartMailer\Exception\SmartMailerException;
+use GryfOSS\Mailer\Exception\SmartMailerException;
 
 try {
     $mailer->send($message);
@@ -208,7 +208,7 @@ try {
 ## Installation
 
 ```bash
-composer require praetoriantechnology/smart-mailer
+composer require gryfoss/twig-easy-mailer
 ```
 
 ## Roadmap

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
-use Praetorian\SmartMailer\Exception\InvalidEmailAddressException;
+use GryfOSS\Mailer\Exception\InvalidEmailAddressException;
 
 /**
  * Represents an email address with optional display name.
@@ -13,8 +13,8 @@ use Praetorian\SmartMailer\Exception\InvalidEmailAddressException;
  * the email format is correct. It also supports an optional display name
  * that can be shown alongside the email address.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class EmailAddress
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\Tests\SmartMailer;
+namespace GryfOSS\Tests\Mailer;
 
 use PHPUnit\Framework\TestCase;
-use Praetorian\SmartMailer\EmailAddress;
-use Praetorian\SmartMailer\Exception\InvalidEmailAddressException;
+use GryfOSS\Mailer\EmailAddress;
+use GryfOSS\Mailer\Exception\InvalidEmailAddressException;
 
 class EmailAddressTest extends TestCase
 {

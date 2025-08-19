@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 /**
  * Exception thrown when attempting to embed an image with a duplicate name.
@@ -14,8 +14,8 @@ namespace Praetorian\SmartMailer\Exception;
  *
  * The exception message includes the duplicate name that was attempted.
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 class NotUniqueEmbedNameException extends SmartMailerException
 {

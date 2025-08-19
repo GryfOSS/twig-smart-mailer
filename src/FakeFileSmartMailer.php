@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -21,8 +21,8 @@ use Twig\Environment;
  * The generated file contains JSON data with email details including recipients,
  * subject, and rendered content.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class FakeFileSmartMailer extends SmartMailer implements SmartMailerInterface
 {

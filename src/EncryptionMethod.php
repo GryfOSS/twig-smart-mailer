@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 /**
  * Enumeration of available SMTP encryption methods.
@@ -10,8 +10,8 @@ namespace Praetorian\SmartMailer;
  * This enum defines the supported encryption methods for SMTP connections,
  * providing a type-safe way to specify how the connection should be secured.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 enum EncryptionMethod: string
 {

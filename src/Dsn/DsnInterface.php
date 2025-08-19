@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Dsn;
+namespace GryfOSS\Mailer\Dsn;
 
 use Stringable;
 
@@ -13,8 +13,8 @@ use Stringable;
  * by Symfony Mailer to establish connections to email services. DSNs encapsulate
  * all the connection information needed to send emails through various providers.
  *
- * @package Praetorian\SmartMailer\Dsn
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Dsn
+ * @author GryfOSS GitHub Team
  */
 interface DsnInterface extends Stringable
 {

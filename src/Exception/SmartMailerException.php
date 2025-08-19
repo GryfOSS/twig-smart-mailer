@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 use Exception;
 
@@ -23,8 +23,8 @@ use Exception;
  * }
  * ```
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 abstract class SmartMailerException extends Exception
 {

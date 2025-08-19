@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Dsn;
+namespace GryfOSS\Mailer\Dsn;
 
 /**
  * Gmail Data Source Name (DSN) implementation.
@@ -18,8 +18,8 @@ namespace Praetorian\SmartMailer\Dsn;
  * This DSN leverages Symfony Mailer's Gmail transport which automatically
  * configures the appropriate SMTP settings for Gmail.
  *
- * @package Praetorian\SmartMailer\Dsn
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Dsn
+ * @author GryfOSS GitHub Team
  */
 class Gmail implements DsnInterface
 {

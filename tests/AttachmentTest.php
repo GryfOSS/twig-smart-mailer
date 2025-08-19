@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\Tests\SmartMailer;
+namespace GryfOSS\Tests\Mailer;
 
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\TestCase;
-use Praetorian\SmartMailer\Attachment;
-use Praetorian\SmartMailer\Exception\InvalidAttachmentException;
+use GryfOSS\Mailer\Attachment;
+use GryfOSS\Mailer\Exception\InvalidAttachmentException;
 use ReflectionClass;
 
 class AttachmentTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 /**
  * SMTP server configuration class.
@@ -14,8 +14,8 @@ namespace Praetorian\SmartMailer;
  * Note: This class appears to be a legacy implementation. For actual email
  * sending, use the DSN classes in the Dsn namespace which implement DsnInterface.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class Smtp
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
-use Praetorian\SmartMailer\Exception\InvalidAttachmentException;
+use GryfOSS\Mailer\Exception\InvalidAttachmentException;
 
 /**
  * Represents a file attachment for email messages.
@@ -12,8 +12,8 @@ use Praetorian\SmartMailer\Exception\InvalidAttachmentException;
  * This class handles file attachments that can be added to email messages.
  * It validates that the file exists and is readable before allowing it to be used.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class Attachment
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 use Exception;
-use Praetorian\SmartMailer\Dsn\DsnInterface;
-use Praetorian\SmartMailer\Exception\InvalidEmailMessageException;
-use Praetorian\SmartMailer\Exception\SendException;
+use GryfOSS\Mailer\Dsn\DsnInterface;
+use GryfOSS\Mailer\Exception\InvalidEmailMessageException;
+use GryfOSS\Mailer\Exception\SendException;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Address;
@@ -28,8 +28,8 @@ use Twig\Loader\FilesystemLoader;
  * The class integrates Twig templating to allow dynamic content generation
  * using template syntax within email bodies.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 class SmartMailer implements SmartMailerInterface
 {

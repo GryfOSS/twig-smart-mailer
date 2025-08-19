@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 /**
  * Exception thrown when an email address format is invalid.
@@ -13,8 +13,8 @@ namespace Praetorian\SmartMailer\Exception;
  *
  * The exception message includes the invalid email address that was provided.
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 class InvalidEmailAddressException extends SmartMailerException
 {

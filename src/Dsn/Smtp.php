@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Dsn;
+namespace GryfOSS\Mailer\Dsn;
 
-use Praetorian\SmartMailer\EncryptionMethod;
-use Praetorian\SmartMailer\LoginMethod;
+use GryfOSS\Mailer\EncryptionMethod;
+use GryfOSS\Mailer\LoginMethod;
 
 /**
  * SMTP Data Source Name (DSN) implementation.
@@ -17,8 +17,8 @@ use Praetorian\SmartMailer\LoginMethod;
  * The generated DSN follows the format:
  * smtp://username:password@host:port?verify_peer=0
  *
- * @package Praetorian\SmartMailer\Dsn
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Dsn
+ * @author GryfOSS GitHub Team
  */
 class Smtp implements DsnInterface
 {

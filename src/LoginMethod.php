@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 /**
  * Enumeration of available SMTP authentication methods.
@@ -10,8 +10,8 @@ namespace Praetorian\SmartMailer;
  * This enum defines the supported authentication methods for SMTP connections,
  * providing a type-safe way to specify how authentication should be performed.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 enum LoginMethod: string
 {

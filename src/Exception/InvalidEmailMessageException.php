@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 /**
  * Exception thrown when an email message is invalid.
@@ -14,8 +14,8 @@ namespace Praetorian\SmartMailer\Exception;
  * - No recipients (to, cc, or bcc)
  * - No content (both HTML and text are empty)
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 class InvalidEmailMessageException extends SmartMailerException
 {

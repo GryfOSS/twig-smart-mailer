@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 /**
  * Exception thrown when a file attachment is invalid.
@@ -13,8 +13,8 @@ namespace Praetorian\SmartMailer\Exception;
  *
  * The exception message includes the file path that caused the issue.
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 class InvalidAttachmentException extends SmartMailerException
 {

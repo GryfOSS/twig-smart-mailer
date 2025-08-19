@@ -1,16 +1,16 @@
 {
-    "name": "praetoriantechnology/smart-mailer",
+    "name": "gryfoss/twig-easy-mailer",
     "description": "Smart mailer based on Symfony Mailer which supports dynamic source mailboxes and easy integration of files within emails",
     "type": "library",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Praetorian\\SmartMailer\\": "src/"
+            "GryfOSS\\Mailer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-          "Praetorian\\Tests\\SmartMailer\\": "tests/"
+          "GryfOSS\\Tests\\Mailer\\": "tests/"
         }
     },
     "minimum-stability": "stable",

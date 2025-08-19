@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer\Exception;
+namespace GryfOSS\Mailer\Exception;
 
 /**
  * Exception thrown when email sending fails.
@@ -12,8 +12,8 @@ namespace Praetorian\SmartMailer\Exception;
  * configuration errors. It wraps the underlying exception from Symfony
  * Mailer to provide a consistent error handling interface.
  *
- * @package Praetorian\SmartMailer\Exception
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer\Exception
+ * @author GryfOSS GitHub Team
  */
 class SendException extends SmartMailerException
 {

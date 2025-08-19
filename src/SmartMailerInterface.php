@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Praetorian\SmartMailer;
+namespace GryfOSS\Mailer;
 
 /**
  * Interface for email sending implementations.
@@ -10,8 +10,8 @@ namespace Praetorian\SmartMailer;
  * This interface defines the contract that all email sending implementations
  * must follow, ensuring a consistent API for sending email messages.
  *
- * @package Praetorian\SmartMailer
- * @author Praetorian Technology
+ * @package GryfOSS\Mailer
+ * @author GryfOSS GitHub Team
  */
 interface SmartMailerInterface
 {
@@ -22,8 +22,8 @@ interface SmartMailerInterface
      *
      * @return mixed The result of the send operation (implementation-dependent)
      *
-     * @throws \Praetorian\SmartMailer\Exception\InvalidEmailMessageException When the message is invalid
-     * @throws \Praetorian\SmartMailer\Exception\SendException When sending fails
+     * @throws \GryfOSS\Mailer\Exception\InvalidEmailMessageException When the message is invalid
+     * @throws \GryfOSS\Mailer\Exception\SendException When sending fails
      */
     public function send(Message $message);
 }
