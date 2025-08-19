@@ -150,22 +150,22 @@ class FakeFileSmartMailerTest extends TestCase
     public function testSendMessageWithImages(): void
     {
         $imagePath = __DIR__ . '/Assets/icon.png';
-        
+
         $message = new Message();
         $message->setFrom(new EmailAddress('sender@example.com'));
         $message->addTo(new EmailAddress('recipient@example.com'));
         $message->setHtml('<p>Hello with image!</p>');
-        
+
         $imageAttachment = new Attachment($imagePath, 'embedded-icon.png');
         $message->addImage($imageAttachment);
-        
+
         $this->mailer->send($message);
-        
+
         $this->assertFileExists($this->tempFile);
-        
+
         $content = file_get_contents($this->tempFile);
         $data = json_decode($content, true);
-        
+
         $this->assertArrayHasKey('html', $data);
         $this->assertStringContainsString('Hello with image!', $data['html']);
     }

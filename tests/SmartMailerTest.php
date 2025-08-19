@@ -207,20 +207,20 @@ class SmartMailerTest extends TestCase
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'test_email_');
         $fakeMailer = new \GryfOSS\Mailer\FakeFileSmartMailer($tempFile);
-        
+
         $imagePath = __DIR__ . '/Assets/icon.png';
-        
+
         $message = new Message();
         $message->setFrom(new EmailAddress('sender@example.com'));
         $message->addTo(new EmailAddress('recipient@example.com'));
         $message->setHtml('<p>Hello World</p>');
-        
+
         $imageAttachment = new Attachment($imagePath, 'logo.png');
         $message->addImage($imageAttachment);
-        
+
         // This should not throw any exceptions
         $fakeMailer->send($message);
-        
+
         $this->assertFileExists($tempFile);
         unlink($tempFile);
     }

@@ -18,26 +18,26 @@ class FakeFileSmartMailerCompleteTest extends TestCase
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'test_email_');
         $imagePath = __DIR__ . '/Assets/icon.png';
-        
+
         $mailer = new FakeFileSmartMailer($tempFile);
-        
+
         $message = new Message();
         $message->setFrom(new EmailAddress('sender@example.com'));
         $message->addTo(new EmailAddress('recipient@example.com'));
         $message->setHtml('<p>Email with embedded image</p>');
-        
+
         $imageAttachment = new Attachment($imagePath, 'embedded-image.png');
         $message->addImage($imageAttachment);
-        
+
         $mailer->send($message);
-        
+
         $this->assertFileExists($tempFile);
         $content = file_get_contents($tempFile);
         $data = json_decode($content, true);
-        
+
         $this->assertArrayHasKey('html', $data);
         $this->assertStringContainsString('Email with embedded image', $data['html']);
-        
+
         unlink($tempFile);
     }
 
