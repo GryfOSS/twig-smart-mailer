@@ -439,11 +439,7 @@ class Message
             return false;
         }
 
-        if (array_search($attachment, $this->getAttachments(), true)) {
-            return true;
-        }
-
-        return false;
+        return array_search($attachment, $this->getAttachments(), true) !== false;
     }
 
     /**
@@ -457,7 +453,11 @@ class Message
      */
     public function removeAttachemnt(Attachment $attachment)
     {
-        while ($key = array_search($attachment, $this->getAttachments() ?? [], true)) {
+        if (empty($this->attachments)) {
+            return $this;
+        }
+
+        while (($key = array_search($attachment, $this->attachments, true)) !== false) {
             unset($this->attachments[$key]);
         }
 
@@ -535,11 +535,7 @@ class Message
             return false;
         }
 
-        if (array_search($attachment, $this->getImages(), true)) {
-            return true;
-        }
-
-        return false;
+        return array_search($attachment, $this->getImages(), true) !== false;
     }
 
     /**
@@ -623,6 +619,10 @@ class Message
         if (!is_array($collection)) {
             return $this;
         }
+
+        unset($collection[(string) $emailAddress]);
+
+        return $this;
     }
 
     /**

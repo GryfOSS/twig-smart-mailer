@@ -26,12 +26,12 @@ class Gmail implements DsnInterface
     /**
      * Gmail username (email address).
      */
-    protected ?string $username;
+    protected ?string $username = null;
 
     /**
      * Gmail password or app-specific password.
      */
-    protected ?string $password;
+    protected ?string $password = null;
 
     /**
      * Gets the Gmail username.

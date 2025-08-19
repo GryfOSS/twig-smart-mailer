@@ -45,12 +45,12 @@ class Smtp implements DsnInterface
     /**
      * Username for SMTP authentication.
      */
-    protected ?string $username;
+    protected ?string $username = null;
 
     /**
      * Password for SMTP authentication.
      */
-    protected ?string $password;
+    protected ?string $password = null;
 
     /**
      * Gets the SMTP server hostname.
