@@ -58,12 +58,12 @@ jobs:
       - name: Check coverage requirements
         run: |
           # Extract line coverage percentage from PHPUnit output
-          COVERAGE=$(XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text | grep -oP 'Lines:\s+\K[\d.]+(?=%)')
+          COVERAGE=$(XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text | grep "Lines:" | head -1 | grep -oP '[\d.]+(?=%)')
           echo "Current line coverage: $COVERAGE%"
 
           # Check if coverage meets minimum requirement (100%)
           if (( $(echo "$COVERAGE >= 100.0" | bc -l) )); then
-            echo "✅ Coverage requirement met: $COVERAGE% = 100.0%"
+            echo "✅ Coverage requirement met: $COVERAGE% >= 100.0%"
           else
             echo "❌ Coverage requirement not met: $COVERAGE% < 100.0%"
             exit 1
