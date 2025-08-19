@@ -244,17 +244,3 @@ jobs:
             echo "One or more quality gates failed."
             exit 1
           fi
-
-  deploy-ready:
-    name: Deploy Ready
-    runs-on: ubuntu-latest
-    needs: [quality-gates]
-    if: github.ref == 'refs/heads/main' && needs.quality-gates.result == 'success'
-
-    steps:
-      - name: Mark as deploy ready
-        run: |
-          echo "🚀 Package is ready for deployment!"
-          echo "All tests passed and quality gates met."
-          echo "Branch: ${{ github.ref }}"
-          echo "Commit: ${{ github.sha }}"
