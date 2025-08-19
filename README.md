@@ -1,4 +1,4 @@
-GryfOSS: Twig Easy Mailer
+GryfOSS: Twig Smart Mailer
 ==========================
 
 ![Tests status](https://github.com/gryfoss/twig-easy-mailer/workflows/tests/badge.svg)
