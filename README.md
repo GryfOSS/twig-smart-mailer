@@ -1,7 +1,7 @@
 GryfOSS: Twig Smart Mailer
 ==========================
 
-![Tests status](https://github.com/gryfoss/twig-easy-mailer/workflows/tests/badge.svg)
+![Tests status](https://github.com/GryfOSS/twig-smart-mailer/actions/workflows/tests.yml/badge.svg)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/gryfoss/twig-easy-mailer?label=latest%20version&sort=semver)
 
 Smart mailer is a simple library which assists sending of emails with use of
