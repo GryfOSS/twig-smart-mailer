@@ -177,7 +177,7 @@ class SmartMailer implements SmartMailerInterface
         }
 
         try {
-            $mailer->send($email);
+            return $mailer->send($email);
         } catch (Exception $e) {
             throw new SendException($e->getMessage(), $e->getCode(), $e);
         }
