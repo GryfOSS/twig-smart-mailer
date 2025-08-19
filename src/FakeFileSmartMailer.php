@@ -132,8 +132,15 @@ class FakeFileSmartMailer extends SmartMailer implements SmartMailerInterface
         $emailDta = [
             'from' => $email->getFrom(),
             'to' => $email->getTo(),
+            'cc' => $email->getCc(),
+            'bcc' => $email->getBcc(),
             'subject' => $email->getSubject(),
             'html' => $email->getHtmlBody(),
+            'text' => $email->getTextBody(),
+            'attachments' => array_map(function($attachment) {
+                return $attachment->getName();
+            }, $message->getAttachments() ?? []),
+            'images' => array_keys($message->getImages() ?? [])
         ];
 
         file_put_contents($this->getOutputPath(), json_encode($emailDta));

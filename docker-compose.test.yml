@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: smart-mailer-mailhog
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    environment:
+      - MH_STORAGE=memory
+    networks:
+      - smart-mailer-test
+
+networks:
+  smart-mailer-test:
+    driver: bridge

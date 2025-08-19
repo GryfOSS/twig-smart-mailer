@@ -53,6 +53,32 @@ class Smtp implements DsnInterface
     protected ?string $password = null;
 
     /**
+     * Creates a new SMTP DSN instance.
+     *
+     * @param string $host The SMTP server hostname or IP address
+     * @param int $port The SMTP server port number
+     * @param string|null $username Optional username for authentication
+     * @param string|null $password Optional password for authentication
+     * @param EncryptionMethod $encryption Optional encryption method (defaults to SSLTLS)
+     * @param LoginMethod $loginMethod Optional authentication method (defaults to LOGIN)
+     */
+    public function __construct(
+        string $host,
+        int $port,
+        ?string $username = null,
+        ?string $password = null,
+        EncryptionMethod $encryption = EncryptionMethod::SSLTLS,
+        LoginMethod $loginMethod = LoginMethod::LOGIN
+    ) {
+        $this->host = $host;
+        $this->port = $port;
+        $this->username = $username;
+        $this->password = $password;
+        $this->encryption = $encryption;
+        $this->loginMethod = $loginMethod;
+    }
+
+    /**
      * Gets the SMTP server hostname.
      *
      * @return string The server hostname or IP address
