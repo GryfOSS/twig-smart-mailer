@@ -15,20 +15,58 @@ use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
+/**
+ * Main email sending implementation with Twig template support.
+ *
+ * This class provides the primary implementation for sending emails using
+ * Symfony Mailer with enhanced features including:
+ * - Twig template rendering for HTML and text content
+ * - File attachments and embedded images
+ * - Flexible DSN-based transport configuration
+ * - Message validation
+ *
+ * The class integrates Twig templating to allow dynamic content generation
+ * using template syntax within email bodies.
+ *
+ * @package Praetorian\SmartMailer
+ * @author Praetorian Technology
+ */
 class SmartMailer implements SmartMailerInterface
 {
+    /**
+     * Twig environment for template rendering.
+     */
     protected ?Environment $twig = null;
 
+    /**
+     * Creates a new SmartMailer instance.
+     *
+     * @param DsnInterface $dsn The DSN configuration for the email transport
+     * @param Environment|null $twig Optional Twig environment. If not provided,
+     *                               a default filesystem-based environment will be created
+     */
     public function __construct(protected DsnInterface $dsn, ?Environment $twig = null)
     {
         $this->twig = $twig ?? $this->createDummyTwig();
     }
 
+    /**
+     * Gets the current DSN configuration.
+     *
+     * @return DsnInterface The DSN configuration
+     */
     public function getDsn(): DsnInterface
     {
         return $this->dsn;
     }
 
+    /**
+     * Sets a new DSN configuration.
+     *
+     * @param DsnInterface $dsn The new DSN configuration
+     *
+     * @return self Returns this instance for method chaining
+     */
     public function setDsn(DsnInterface $dsn): self
     {
         $this->dsn = $dsn;
@@ -36,6 +74,20 @@ class SmartMailer implements SmartMailerInterface
         return $this;
     }
 
+    /**
+     * Validates an email message before sending.
+     *
+     * Checks that the message has:
+     * - A sender (from address)
+     * - At least one recipient (to, cc, or bcc)
+     * - At least one content type (HTML or text)
+     *
+     * @param Message $message The message to validate
+     *
+     * @return bool Always returns true if validation passes
+     *
+     * @throws InvalidEmailMessageException When validation fails
+     */
     public function validate(Message $message)
     {
         if (!$message->getFrom()) {
@@ -53,6 +105,23 @@ class SmartMailer implements SmartMailerInterface
         return true;
     }
 
+    /**
+     * Sends an email message.
+     *
+     * This method:
+     * 1. Validates the message
+     * 2. Creates a Symfony Mailer transport from the DSN
+     * 3. Renders Twig templates for HTML/text content
+     * 4. Processes attachments and embedded images
+     * 5. Sends the email
+     *
+     * @param Message $message The message to send
+     *
+     * @return mixed The result of the send operation
+     *
+     * @throws InvalidEmailMessageException When message validation fails
+     * @throws SendException When sending fails
+     */
     public function send(Message $message)
     {
         $this->validate($message);
@@ -114,6 +183,15 @@ class SmartMailer implements SmartMailerInterface
         }
     }
 
+    /**
+     * Creates a basic Twig environment for template rendering.
+     *
+     * This fallback method creates a minimal Twig environment with a
+     * filesystem loader pointing to the current directory. It's used
+     * when no custom Twig environment is provided.
+     *
+     * @return Environment A basic Twig environment
+     */
     protected function createDummyTwig(): Environment
     {
         $loader = new FilesystemLoader('.');
