@@ -24,9 +24,6 @@ class SmartMailerMethodsTest extends TestCase
             }
         }
 
-        // This will help us see what methods exist
-        echo "SmartMailer methods: " . implode(', ', $methodNames) . "\n";
-
         $this->assertGreaterThan(0, count($methodNames));
     }
 }

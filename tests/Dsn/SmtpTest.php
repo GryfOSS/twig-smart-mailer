@@ -15,7 +15,7 @@ class SmtpTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->smtp = new Smtp();
+        $this->smtp = new Smtp('smtp.example.com', 587);
     }
 
     public function testSetAndGetHost(): void

@@ -21,7 +21,7 @@ class SmartMailerCoverageBoostTest extends TestCase
             ->setEncryption(\GryfOSS\Mailer\EncryptionMethod::STARTTLS);
 
         // Override to use null transport
-        $dsn = new class extends Smtp {
+        $dsn = new class ('smtp.example.com', 587) extends Smtp {
             public function __toString(): string {
                 return 'null://null';
             }
@@ -50,7 +50,7 @@ class SmartMailerCoverageBoostTest extends TestCase
 
     public function testSmartMailerConstructorPathsWithDifferentTwigSettings(): void
     {
-        $dsn = new class extends Smtp {
+        $dsn = new class ('smtp.example.com', 587) extends Smtp {
             public function __toString(): string {
                 return 'null://null';
             }
@@ -83,7 +83,7 @@ class SmartMailerCoverageBoostTest extends TestCase
 
     public function testForceCreateDummyTwigMethodDirectCall(): void
     {
-        $dsn = new class extends Smtp {
+        $dsn = new class ('smtp.example.com', 587) extends Smtp {
             public function __toString(): string {
                 return 'null://null';
             }

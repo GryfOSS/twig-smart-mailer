@@ -287,6 +287,91 @@ class SmartMailerTest extends TestCase
         unlink($tempFile);
     }
 
+    public function testSendWithTwigSubjectProcessing(): void
+    {
+        // Create a custom twig environment for proper testing
+        $twig = new Environment(new ArrayLoader([]));
+        
+        // Create a mock DSN that returns null transport for testing
+        $dsnMock = $this->createMock(DsnInterface::class);
+        $dsnMock->method('__toString')->willReturn('null://null');
+        
+        $mailer = new SmartMailer($dsnMock, $twig);
+
+        $message = new Message();
+        $message->setFrom(new EmailAddress('sender@example.com'));
+        $message->addTo(new EmailAddress('recipient@example.com'));
+        
+        // Test subject with Twig variables
+        $message->setSubject('Welcome {{ name }}! You have {{ count }} new messages');
+        $message->setHtml('<p>Hello {{ name }}!</p>');
+        $message->setContext([
+            'name' => 'John Doe',
+            'count' => 5
+        ]);
+
+        // This should process the Twig subject line
+        $result = $mailer->send($message);
+        
+        // Verify the operation completed without throwing exceptions
+        $this->assertNull($result); // null transport returns null
+    }
+
+    public function testSendWithNonTwigSubjectSkipsProcessing(): void
+    {
+        // Create a custom twig environment for proper testing
+        $twig = new Environment(new ArrayLoader([]));
+        
+        // Create a mock DSN that returns null transport for testing
+        $dsnMock = $this->createMock(DsnInterface::class);
+        $dsnMock->method('__toString')->willReturn('null://null');
+        
+        $mailer = new SmartMailer($dsnMock, $twig);
+
+        $message = new Message();
+        $message->setFrom(new EmailAddress('sender@example.com'));
+        $message->addTo(new EmailAddress('recipient@example.com'));
+        
+        // Test subject WITHOUT Twig syntax (should skip processing)
+        $message->setSubject('Regular Subject Line');
+        $message->setHtml('<p>Hello World!</p>');
+
+        // This should NOT process the subject through Twig
+        $result = $mailer->send($message);
+        
+        // Verify the operation completed without throwing exceptions
+        $this->assertNull($result); // null transport returns null
+    }
+
+    public function testSendWithTwigControlStructuresInSubject(): void
+    {
+        // Create a custom twig environment for proper testing
+        $twig = new Environment(new ArrayLoader([]));
+        
+        // Create a mock DSN that returns null transport for testing
+        $dsnMock = $this->createMock(DsnInterface::class);
+        $dsnMock->method('__toString')->willReturn('null://null');
+        
+        $mailer = new SmartMailer($dsnMock, $twig);
+
+        $message = new Message();
+        $message->setFrom(new EmailAddress('sender@example.com'));
+        $message->addTo(new EmailAddress('recipient@example.com'));
+        
+        // Test subject with Twig control structures ({% %})
+        $message->setSubject('Order Status: {% if status == "completed" %}Completed{% else %}Pending{% endif %}');
+        $message->setHtml('<p>Order details</p>');
+        $message->setContext([
+            'status' => 'completed'
+        ]);
+
+        // This should process the Twig control structures in subject
+        $result = $mailer->send($message);
+        
+        // Verify the operation completed without throwing exceptions
+        $this->assertNull($result); // null transport returns null
+    }
+
     private function mockFileSystemFunctions(): void
     {
         // Create temporary test files for attachment testing

@@ -13,7 +13,7 @@ class DsnInterfaceTest extends TestCase
 {
     public function testSmtpImplementsDsnInterface(): void
     {
-        $smtp = new Smtp();
+        $smtp = new Smtp('smtp.example.com', 587);
 
         $this->assertInstanceOf(DsnInterface::class, $smtp);
         $this->assertInstanceOf(\Stringable::class, $smtp);
