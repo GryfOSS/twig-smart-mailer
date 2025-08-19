@@ -1,5 +1,5 @@
 {
-    "name": "gryfoss/twig-easy-mailer",
+    "name": "gryfoss/twig-smart-mailer",
     "description": "Smart mailer based on Symfony Mailer which supports dynamic source mailboxes and easy integration of files within emails",
     "type": "library",
     "license": "MIT",
@@ -25,12 +25,16 @@
     "scripts": {
         "fix": "./vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --allow-risky=yes",
         "test:unit": "XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit",
+        "test:unit:coverage": "XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-html coverage-html --coverage-text",
         "test:functional": "./vendor/behat/behat/bin/behat --colors",
-        "test:functional:setup": "docker-compose -f docker-compose.test.yml up -d mailhog && sleep 5",
-        "test:functional:teardown": "docker-compose -f docker-compose.test.yml down",
+        "test:functional:setup": "docker compose -f docker-compose.test.yml up -d mailhog && sleep 5",
+        "test:functional:teardown": "docker compose -f docker-compose.test.yml down",
         "test": [
-            "composer install",
             "@test:unit",
+            "@test:functional"
+        ],
+        "ci": [
+            "@test:unit:coverage",
             "@test:functional"
         ]
     },

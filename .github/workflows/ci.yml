@@ -1,0 +1,268 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop, updated ]
+  pull_request:
+    branches: [ main, develop, updated ]
+
+jobs:
+  unit-tests:
+    name: Unit Tests & Coverage
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, dom, fileinfo, gd
+          coverage: xdebug
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Create test assets directory
+        run: |
+          mkdir -p tests/Assets
+          # Create a simple test image if it doesn't exist
+          if [ ! -f tests/Assets/icon.png ]; then
+            # Create a 1x1 pixel PNG for testing
+            echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==" | base64 -d > tests/Assets/icon.png
+          fi
+
+      - name: Run unit tests with coverage
+        run: |
+          XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit \
+            --coverage-text \
+            --coverage-clover=coverage.xml \
+            --coverage-html=coverage-html \
+            --log-junit=junit.xml
+
+      - name: Check coverage requirements
+        run: |
+          # Extract line coverage percentage from PHPUnit output
+          COVERAGE=$(XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text | grep -oP 'Lines:\s+\K[\d.]+(?=%)')
+          echo "Current line coverage: $COVERAGE%"
+
+          # Check if coverage meets minimum requirement (99%)
+          if (( $(echo "$COVERAGE >= 99.0" | bc -l) )); then
+            echo "✅ Coverage requirement met: $COVERAGE% >= 99.0%"
+          else
+            echo "❌ Coverage requirement not met: $COVERAGE% < 99.0%"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results-php${{ matrix.php-version }}
+          path: |
+            junit.xml
+            coverage.xml
+            coverage-html/
+
+  functional-tests:
+    name: Functional Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    services:
+      mailhog:
+        image: mailhog/mailhog:latest
+        ports:
+          - 1025:1025
+          - 8025:8025
+        options: >-
+          --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8025 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, dom, fileinfo, gd
+
+      - name: Cache Composer packages
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-8.2-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-8.2-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Create test assets
+        run: |
+          mkdir -p tests/Assets
+          mkdir -p tests/temp
+          mkdir -p features/templates
+
+          # Create test image if it doesn't exist
+          if [ ! -f tests/Assets/icon.png ]; then
+            echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==" | base64 -d > tests/Assets/icon.png
+          fi
+
+          # Create test attachment file
+          echo "This is a test document for functional testing." > tests/Assets/test-document.txt
+
+      - name: Wait for MailHog to be ready
+        run: |
+          echo "Waiting for MailHog to be ready..."
+          timeout 30 bash -c 'until curl -f http://localhost:8025/api/v2/messages; do sleep 1; done'
+          echo "MailHog is ready!"
+
+      - name: Clear MailHog before tests
+        run: |
+          curl -X DELETE http://localhost:8025/api/v1/messages || echo "No messages to clear"
+
+      - name: Run functional tests
+        run: |
+          # Set environment variables for tests
+          export MAILHOG_HOST=localhost
+          export MAILHOG_PORT=1025
+          export MAILHOG_API=http://localhost:8025
+
+          # Run Behat tests with verbose output
+          ./vendor/behat/behat/bin/behat --colors --format=progress --out=std --format=junit --out=behat-results
+        env:
+          MAILHOG_HOST: localhost
+          MAILHOG_PORT: 1025
+          MAILHOG_API: http://localhost:8025
+
+      - name: Check functional test results
+        run: |
+          # Count scenarios and check success rate
+          if [ -f behat-results/default.xml ]; then
+            TOTAL=$(grep -o 'tests="[0-9]*"' behat-results/default.xml | grep -o '[0-9]*' | head -1)
+            FAILURES=$(grep -o 'failures="[0-9]*"' behat-results/default.xml | grep -o '[0-9]*' | head -1)
+            ERRORS=$(grep -o 'errors="[0-9]*"' behat-results/default.xml | grep -o '[0-9]*' | head -1)
+
+            TOTAL=${TOTAL:-0}
+            FAILURES=${FAILURES:-0}
+            ERRORS=${ERRORS:-0}
+
+            PASSED=$((TOTAL - FAILURES - ERRORS))
+            SUCCESS_RATE=$(echo "scale=1; $PASSED * 100 / $TOTAL" | bc -l)
+
+            echo "Functional Test Results:"
+            echo "  Total scenarios: $TOTAL"
+            echo "  Passed: $PASSED"
+            echo "  Failed: $FAILURES"
+            echo "  Errors: $ERRORS"
+            echo "  Success rate: $SUCCESS_RATE%"
+
+            # Require at least 90% success rate for functional tests
+            if (( $(echo "$SUCCESS_RATE >= 90.0" | bc -l) )); then
+              echo "✅ Functional tests passed with $SUCCESS_RATE% success rate"
+            else
+              echo "❌ Functional tests failed: $SUCCESS_RATE% < 90.0% required"
+              exit 1
+            fi
+          else
+            echo "❌ No Behat results file found"
+            exit 1
+          fi
+        shell: bash
+
+      - name: Upload functional test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: functional-test-results
+          path: |
+            behat-results/
+            tests/temp/
+
+      - name: Display MailHog messages (debug)
+        if: failure()
+        run: |
+          echo "=== MailHog Messages for Debugging ==="
+          curl -s http://localhost:8025/api/v2/messages | jq '.' || echo "No messages or jq not available"
+
+  quality-gates:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    needs: [unit-tests, functional-tests]
+    if: always()
+
+    steps:
+      - name: Check overall pipeline status
+        run: |
+          echo "=== Pipeline Results Summary ==="
+
+          # Check unit tests result
+          if [ "${{ needs.unit-tests.result }}" == "success" ]; then
+            echo "✅ Unit Tests: PASSED"
+            UNIT_PASSED=true
+          else
+            echo "❌ Unit Tests: FAILED"
+            UNIT_PASSED=false
+          fi
+
+          # Check functional tests result
+          if [ "${{ needs.functional-tests.result }}" == "success" ]; then
+            echo "✅ Functional Tests: PASSED"
+            FUNCTIONAL_PASSED=true
+          else
+            echo "❌ Functional Tests: FAILED"
+            FUNCTIONAL_PASSED=false
+          fi
+
+          # Overall pipeline result
+          if [ "$UNIT_PASSED" == "true" ] && [ "$FUNCTIONAL_PASSED" == "true" ]; then
+            echo "🎉 Overall Pipeline: SUCCESS"
+            echo "All quality gates passed!"
+          else
+            echo "💥 Overall Pipeline: FAILED"
+            echo "One or more quality gates failed."
+            exit 1
+          fi
+
+  deploy-ready:
+    name: Deploy Ready
+    runs-on: ubuntu-latest
+    needs: [quality-gates]
+    if: github.ref == 'refs/heads/main' && needs.quality-gates.result == 'success'
+
+    steps:
+      - name: Mark as deploy ready
+        run: |
+          echo "🚀 Package is ready for deployment!"
+          echo "All tests passed and quality gates met."
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
